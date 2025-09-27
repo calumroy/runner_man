@@ -44,7 +44,7 @@ JUMP_CUTOFF_SPEED = 240.0
 # Missile tuning
 MISSILE_WIDTH = 24
 MISSILE_HEIGHT = 12
-MISSILE_MASS_KG = 20.0
+MISSILE_MASS_KG = 200.0
 MISSILE_THRUST = 2000.0
 MISSILE_MAX_SPEED = 220.0
 MISSILE_TURN_RATE_DEG_PER_S = 60.0
@@ -706,8 +706,8 @@ def main() -> None:
         # Stage: ground and a few floating platforms. They have mass but are anchored (fixed in place).
         ground = Platform(pygame.Rect(0, WINDOW_HEIGHT - 40, WINDOW_WIDTH, 40), Color(40, 40, 40), mass_kg=10000.0, is_anchored=True)
         moving_platforms: list[MovingPlatform] = [
-            MovingPlatform(pygame.Rect(220, WINDOW_HEIGHT - 240, 160, 22), Color(60, 100, 160), mass_kg=500.0, velocity=pygame.Vector2(140, 0)),
-            MovingPlatform(pygame.Rect(520, WINDOW_HEIGHT - 320, 160, 22), Color(100, 160, 60), mass_kg=500.0, velocity=pygame.Vector2(-120, -20)),
+            MovingPlatform(pygame.Rect(220, WINDOW_HEIGHT - 240, 160, 22), Color(60, 100, 160), mass_kg=500.0, velocity=pygame.Vector2(140, 50)),
+            MovingPlatform(pygame.Rect(520, WINDOW_HEIGHT - 320, 160, 22), Color(100, 160, 60), mass_kg=500.0, velocity=pygame.Vector2(-120, -40)),
             MovingPlatform(pygame.Rect(760, WINDOW_HEIGHT - 380, 90, 22), Color(160, 100, 60), mass_kg=480.0, velocity=pygame.Vector2(-160, 0)),
         ]
         platforms: list[Platform] = [ground, *moving_platforms]
@@ -882,7 +882,7 @@ def main() -> None:
                     # Missile causes an immediate explosion on impact as well
                     exp = Explosion(pygame.Vector2(m.rect.center), EXPLOSION_RADIUS, EXPLOSION_LIFE_S)
                     explosions.append(exp)
-                    affected: list[GameObject] = [player, *platforms]
+                    affected: list[GameObject] = [player, *platforms, *missiles]
                     exp.apply_impulses(affected, EXPLOSION_IMPULSE)
                     # Missile is consumed; player takes a hit
                     missiles.remove(m)
@@ -903,7 +903,7 @@ def main() -> None:
                     exp = Explosion(pygame.Vector2(m.rect.center), EXPLOSION_RADIUS, EXPLOSION_LIFE_S)
                     explosions.append(exp)
                     # Objects affected: player and all platforms (dynamic only will react)
-                    affected: list[GameObject] = [player, *platforms]
+                    affected: list[GameObject] = [player, *platforms, *missiles]
                     exp.apply_impulses(affected, EXPLOSION_IMPULSE)
                     missiles.remove(m)
                     # Immediately run a few extra platform-platform solver passes to de-overlap after blasts
@@ -948,7 +948,7 @@ def main() -> None:
                             # explode missile
                             exp = Explosion(pygame.Vector2(m.rect.center), EXPLOSION_RADIUS, EXPLOSION_LIFE_S)
                             explosions.append(exp)
-                            affected: list[GameObject] = [player, *platforms]
+                            affected: list[GameObject] = [player, *platforms, *missiles]
                             exp.apply_impulses(affected, EXPLOSION_IMPULSE)
                             missiles.remove(m)
                     # Shield pushes platforms

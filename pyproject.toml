@@ -1,0 +1,11 @@
+[project]
+name = "runner-man"
+version = "0.1.0"
+description = "Runner Man game"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "pygame",
+]
+
+
